@@ -120,7 +120,6 @@ void setup() {
 }
 
 void loop() {
-
 }
 
 void debug_view(Rotation r){
