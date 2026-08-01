@@ -1,26 +1,9 @@
 /*
-custom library for modulino bought off amazon, because the pin mappings weren't correct.
 
-we store information for the entire matrix in 12 unsigned 8-bit integers (12 * 8 == 96; one bit for each led).
-
-usage: 
-
--> declare an instance of the matrix like: 
-Matrix matrix 
-
-matrix.begin(); 
-matrix.set_rotation ({from one of the enums}); 
-
-matrix.clear(); 
-
-matrix.point(x,y); 
-
-... as many
-
-matrix.show(); 
 */
 
 //include for i2c communication:
+#include "font.hpp"
 #include <Wire.h>
 
 //this is the i2c address of the modulino matrix:
@@ -40,9 +23,6 @@ struct Point {
 
 class Matrix {
 public:
-
-
-
   void begin() {
     Wire.begin();
     clear();
@@ -134,59 +114,28 @@ private:
 };
 
 Matrix matrix;
+String msg = "jaye is coOl";
 
 void setup() {
-  // debug_view(ROTATE_0);
-
   //set once:
   matrix.begin();
-  matrix.set_rotation(ROTATE_0);
+  matrix.set_rotation(ROTATE_90);
 }
 
 void loop() {
-  //clear before drawing:
-  matrix.clear();
 
-  //draw:
-  matrix.point(0,0);
 
-  matrix.point(2,0); 
-
-  matrix.point(4,0); 
-
-  //show everything sent:
-  matrix.show(); 
-  delay(100);
-}
-
-void debug_view(Rotation r) {
-  Matrix matrix;
-
-  //init:
-
-  matrix.begin();
-  matrix.clear();
-  matrix.set_rotation(r);
-
-  int x = 0;
-  int y = 0;
-
-  while (true) {
+  for (int i = 0; i < msg.length(); i++) {
+    //clear before drawing:
     matrix.clear();
-    matrix.point(x, y);
+    //get letter for character:
+    auto pts = font7x12::pixels(msg[i]);
+
+    for (int j = 0; j < pts.size(); ++j) {
+      matrix.point(pts[j].x, pts[j].y);
+    }
+    //show everything sent:
     matrix.show();
-
-    delay(50);
-
-    x++;
-
-    if (x >= matrix.width()) {
-      x = 0;
-      y++;
-    }
-
-    if (y >= matrix.height()) {
-      break;
-    }
+    delay(500);
   }
 }

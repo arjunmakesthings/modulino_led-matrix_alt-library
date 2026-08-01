@@ -5,23 +5,13 @@ we store information for the entire matrix in 12 unsigned 8-bit integers (12 * 8
 
 usage: 
 
--> declare an instance of the matrix like: 
-Matrix matrix 
-
-matrix.begin(); 
-matrix.set_rotation ({from one of the enums}); 
-
-matrix.clear(); 
-
-matrix.point(x,y); 
-
-... as many
-
-matrix.show(); 
+-> declare an instance of the 
 */
 
 //include for i2c communication:
 #include <Wire.h>
+
+#include "font.h"
 
 //this is the i2c address of the modulino matrix:
 #define MATRIX_ADDR 0x39
@@ -38,8 +28,43 @@ struct Point {
   uint8_t y;
 };
 
+extern const Glyph font[];
+
 class Matrix {
 public:
+  void character(char c, uint8_t x, uint8_t y) {
+
+    for (int i = 0; i < 26; i++) {
+
+      if (font[i].c == c) {
+
+        for (int row = 0; row < 7; row++) {
+
+          uint8_t bits = font[i].rows[row];
+
+          for (int col = 0; col < 5; col++) {
+
+            if (bits & (1 << (4 - col)))
+              point(x + col, y + row);
+          }
+        }
+
+        return;
+      }
+    }
+  }
+
+  void text(const char *s, uint8_t x, uint8_t y) {
+
+    while (*s) {
+
+      character(*s, x, y);
+
+      x += 6;  // 5 pixels + 1 space
+
+      s++;
+    }
+  }
 
 
 
@@ -140,7 +165,7 @@ void setup() {
 
   //set once:
   matrix.begin();
-  matrix.set_rotation(ROTATE_0);
+  matrix.set_rotation(ROTATE_90);
 }
 
 void loop() {
@@ -148,14 +173,10 @@ void loop() {
   matrix.clear();
 
   //draw:
-  matrix.point(0,0);
-
-  matrix.point(2,0); 
-
-  matrix.point(4,0); 
+  matrix.text("a", 0, 0);
 
   //show everything sent:
-  matrix.show(); 
+  matrix.show();
   delay(100);
 }
 
