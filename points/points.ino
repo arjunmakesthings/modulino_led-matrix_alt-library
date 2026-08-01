@@ -2,6 +2,10 @@
 custom library for modulino bought off amazon, because the pin mappings weren't correct.
 
 we store information for the entire matrix in 12 unsigned 8-bit integers (12 * 8 == 96; one bit for each led).
+
+usage: 
+
+-> declare an instance of the 
 */
 
 //include for i2c communication:
@@ -25,10 +29,12 @@ struct Point {
 class Matrix {
 public:
 
+
+
   void begin() {
     Wire.begin();
     clear();
-   // show();
+    // show();
   }
 
   void set_rotation(Rotation r) {
@@ -79,7 +85,7 @@ public:
     buffer[bit / 8] &= ~(1 << (bit % 8));
   }
 
-//for transformation according to rotation:
+  //for transformation according to rotation:
 private:
   Point transform(uint8_t x, uint8_t y) {
     Point p;
@@ -115,41 +121,60 @@ private:
   Rotation rotation = ROTATE_0;
 };
 
+Matrix matrix;
+
 void setup() {
-  debug_view(ROTATE_0); 
+  // debug_view(ROTATE_0);
+
+  //set once:
+  matrix.begin();
+  matrix.set_rotation(ROTATE_0);
 }
 
 void loop() {
+  //clear before drawing:
+  matrix.clear();
+
+  //draw:
+  matrix.point(0,0);
+
+  matrix.point(2,0); 
+
+  matrix.point(4,0); 
+
+  //show everything sent:
+  matrix.show(); 
+  delay(100);
 }
 
-void debug_view(Rotation r){
-    Matrix matrix;
+void debug_view(Rotation r) {
+  Matrix matrix;
 
-    //init: 
+  //init:
 
-    matrix.begin();
+  matrix.begin();
+  matrix.clear();
+  matrix.set_rotation(r);
+
+  int x = 0;
+  int y = 0;
+
+  while (true) {
     matrix.clear();
-    matrix.set_rotation(r);
+    matrix.point(x, y);
+    matrix.show();
 
-    int x = 0;
-    int y = 0;
+    delay(50);
 
-    while (true) {
-      matrix.clear();
-      matrix.point(x,y);
-      matrix.show();
+    x++;
 
-      delay(50);
-
-      x++;
-
-      if (x >= matrix.width()) {
-        x = 0;
-        y++;
-      }
-
-      if (y >= matrix.height()) {
-        break;
-      }
+    if (x >= matrix.width()) {
+      x = 0;
+      y++;
     }
+
+    if (y >= matrix.height()) {
+      break;
+    }
+  }
 }
