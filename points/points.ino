@@ -26,13 +26,6 @@ matrix.show();
 //this is the i2c address of the modulino matrix:
 #define MATRIX_ADDR 0x39
 
-enum Rotation {
-  ROTATE_0,
-  ROTATE_90,
-  ROTATE_180,
-  ROTATE_270
-};
-
 struct Point {
   uint8_t x;
   uint8_t y;
@@ -40,25 +33,26 @@ struct Point {
 
 class Matrix {
 public:
-
-
-
   void begin() {
     Wire.begin();
+    //wipe everything on it earlier:
     clear();
-    // show();
   }
 
-  void set_rotation(Rotation r) {
-    rotation = r;
+  void set_rotation(int r) {
+    if (r != 0 && r != 90 && r != 180 && r != 270) {
+      rotation = 0;
+    } else {
+      rotation = r;
+    }
   }
 
   uint8_t width() const {
-    return (rotation == ROTATE_0 || rotation == ROTATE_180) ? 12 : 8;
+    return (rotation == 0 || rotation == 180) ? 12 : 8;
   }
 
   uint8_t height() const {
-    return (rotation == ROTATE_0 || rotation == ROTATE_180) ? 8 : 12;
+    return (rotation == 0 || rotation == 180) ? 8 : 12;
   }
 
   void clear() {
@@ -85,17 +79,17 @@ public:
   }
 
   //instead of clearing the whole screen, we can also turn off a single point (led) on the matrix:
-  void rem_point(uint8_t x, uint8_t y) {
+  // void rem_point(uint8_t x, uint8_t y) {
 
-    if (x >= width() || y >= height())
-      return;
+  //   if (x >= width() || y >= height())
+  //     return;
 
-    Point p = transform(x, y);
+  //   Point p = transform(x, y);
 
-    int bit = p.y * 12 + p.x;
+  //   int bit = p.y * 12 + p.x;
 
-    buffer[bit / 8] &= ~(1 << (bit % 8));
-  }
+  //   buffer[bit / 8] &= ~(1 << (bit % 8));
+  // }
 
   //for transformation according to rotation:
 private:
@@ -103,22 +97,22 @@ private:
     Point p;
     switch (rotation) {
 
-      case ROTATE_0:
+      case 0:
         p.x = x;
         p.y = y;
         break;
 
-      case ROTATE_90:
+      case 90:
         p.x = y;
         p.y = 7 - x;
         break;
 
-      case ROTATE_180:
+      case 180:
         p.x = 11 - x;
         p.y = 7 - y;
         break;
 
-      case ROTATE_270:
+      case 270:
         p.x = 11 - y;
         p.y = x;
         break;
@@ -130,36 +124,36 @@ private:
   uint8_t buffer[12] = { 0 };
 
   //by default, set it to 0; if not specified:
-  Rotation rotation = ROTATE_0;
+  int rotation = 0;
 };
 
 Matrix matrix;
 
 void setup() {
-  // debug_view(ROTATE_0);
+  debug_view(90);
 
   //set once:
-  matrix.begin();
-  matrix.set_rotation(ROTATE_0);
+  // matrix.begin();
+  // matrix.set_rotation(0);
 }
 
 void loop() {
-  //clear before drawing:
-  matrix.clear();
+  // //clear before drawing:
+  // matrix.clear();
 
-  //draw:
-  matrix.point(0,0);
+  // //draw:
+  // matrix.point(0,0);
 
-  matrix.point(2,0); 
+  // matrix.point(2,0);
 
-  matrix.point(4,0); 
+  // matrix.point(4,0);
 
-  //show everything sent:
-  matrix.show(); 
-  delay(100);
+  // //show everything sent:
+  // matrix.show();
+  // delay(100);
 }
 
-void debug_view(Rotation r) {
+void debug_view(int r) {
   Matrix matrix;
 
   //init:
