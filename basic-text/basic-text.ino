@@ -3,8 +3,12 @@
 */
 
 //include for i2c communication:
-#include "font.hpp"
 #include <Wire.h>
+
+//font header file:
+#include "font.hpp"
+
+using namespace std;
 
 //this is the i2c address of the modulino matrix:
 #define MATRIX_ADDR 0x39
@@ -114,28 +118,32 @@ private:
 };
 
 Matrix matrix;
-String msg = "jaye is coOl";
+String msg = "test message";
 
 void setup() {
-  //set once:
-  matrix.begin();
-  matrix.set_rotation(ROTATE_90);
+  Serial.begin(9600); 
+  // auto pts = font7x12::pixels('a'); 
+
+  auto pts = font7x12::pixels('h'); 
+
+  for (int i = 0; i<pts.size(); i++){
+    Serial.println(pts[i].x, pts[i].y); 
+  }
 }
 
 void loop() {
 
+  // for (int i = 0; i < msg.length(); i++) {
+  //   //clear before drawing:
+  //   matrix.clear();
+  //   //get letter for character:
+  //   auto pts = font7x12::pixels(msg[i]);
 
-  for (int i = 0; i < msg.length(); i++) {
-    //clear before drawing:
-    matrix.clear();
-    //get letter for character:
-    auto pts = font7x12::pixels(msg[i]);
-
-    for (int j = 0; j < pts.size(); ++j) {
-      matrix.point(pts[j].x, pts[j].y);
-    }
-    //show everything sent:
-    matrix.show();
-    delay(500);
-  }
+  //   for (int j = 0; j < pts.size(); ++j) {
+  //     matrix.point(pts[j].x, pts[j].y);
+  //   }
+  //   //show everything sent:
+  //   matrix.show();
+  //   delay(500);
+  // }
 }

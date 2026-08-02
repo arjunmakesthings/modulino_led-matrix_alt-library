@@ -4,7 +4,6 @@ extracted by jaye's claude;
 from 7x12 otf: https://fontstruct.com/fontstructions/show/243645/7_12_serif.
 */
 
-// font7x12.hpp -- 7x12 pixel font extracted from "7:12 Serif" (7-12_font.otf).
 //
 // Grid: 7 columns x 12 rows. Origin (0,0) is the TOP-LEFT pixel; x increases
 // to the right, y increases DOWNWARD. The baseline sits between rows 9 and 10:
