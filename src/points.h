@@ -1,3 +1,17 @@
+/*
+   alternative library for the modulino led matrix. 
+   created by arjun (@arjunmakesthings); august-2026.
+   released into the public domain.
+*/
+
+/*
+   bought a modulino-matrix off amazon, but the pixel mappings from the default library weren't correct. wrote my own.
+
+   we store information for the entire matrix in 12 unsigned 8-bit integers (12*8 == 96); one bit for each led. 
+
+   we also do transformations based on the rotation that we want to set; i.e: any corner can be considered (0,0), and width & height are adjusted; based on what you set the rotation to be.
+*/
+
 #pragma once
 
 #include <Arduino.h>
